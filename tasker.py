@@ -29,7 +29,7 @@ def task_id_generator() -> str:
             return str(1)
         else:
             last_task_id = tasks[-1]["id"]
-            return str(last_task_id + 1)
+            return str(int(last_task_id) + 1)
 
 
 class Status(Enum):
@@ -64,7 +64,9 @@ def read_tasks_file() -> list[Task]:
     try:
         with open(TASKS_FILE_PATH, "r") as f:
             tasks_str = f.read()
-            return json.loads(tasks_str)
+            tasks_list_of_dicts = json.loads(tasks_str)
+            tasks_list = [Task(**task) for task in tasks_list_of_dicts]
+            return tasks_list
     except FileNotFoundError as e:
         raise FileNotFoundError("Tasks file not found.") from e
 
