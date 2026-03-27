@@ -100,7 +100,16 @@ def add_task(task_description: str) -> None:
         raise e
 
 
-command_map: dict[str, Callable] = {"add": add_task}
+def delete_task(task_id: int) -> None:
+    try:
+        tasks: list[Task] = read_tasks_file()
+        tasks = [task for task in tasks if task.id != task_id]
+        write_tasks_file(tasks)
+    except FileNotFoundError as e:
+        raise FileNotFoundError("Task file not found.") from e
+
+
+command_map: dict[str, Callable] = {"add": add_task, "del": delete_task}
 
 if __name__ == "__main__":
     cli_args = sys.argv[1:]
