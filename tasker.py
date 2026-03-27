@@ -109,7 +109,52 @@ def delete_task(task_id: int) -> None:
         raise FileNotFoundError("Task file not found.") from e
 
 
-command_map: dict[str, Callable] = {"add": add_task, "del": delete_task}
+def console_print_tasks(tasks: list[Task]):
+    ID_W = 4
+    DESC_W = 50
+    STATUS_W = 15
+    CREATED_W = 26
+    UPDATED_W = 26
+
+    header = (
+        f"{'ID':<{ID_W}} "
+        f"{'DESCRIPTION':<{DESC_W}} "
+        f"{'STATUS':<{STATUS_W}} "
+        f"{'CREATED AT':<{CREATED_W}} "
+        f"{'LAST UPDATED AT':<{UPDATED_W}}"
+    )
+    print(header)
+    print("-" * len(header))
+
+    for task in tasks:
+        created_dt = datetime.fromisoformat(task.created_at)
+        created_dt_formatted = created_dt.strftime("%d %b %Y, %H:%M")
+
+        last_updated_dt = datetime.fromisoformat(task.last_updated_at)
+        last_updated_dt_formatted = last_updated_dt.strftime("%d %b %Y, %H:%M")
+
+        print(
+            f"{task.id:<{ID_W}} "
+            f"{task.description:<{DESC_W}} "
+            f"{task.status:<{STATUS_W}} "
+            f"{created_dt_formatted:<{CREATED_W}} "
+            f"{last_updated_dt_formatted:<{UPDATED_W}}"
+        )
+
+
+def list_tasks() -> None:
+    try:
+        tasks: list[Task] = read_tasks_file()
+        console_print_tasks(tasks)
+    except FileNotFoundError as e:
+        raise FileNotFoundError("Task file not found.") from e
+
+
+command_map: dict[str, Callable] = {
+    "add": add_task,
+    "del": delete_task,
+    "ls": list_tasks,
+}
 
 if __name__ == "__main__":
     cli_args = sys.argv[1:]
