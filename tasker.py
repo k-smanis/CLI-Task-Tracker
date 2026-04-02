@@ -144,9 +144,10 @@ def mark_task_in_progress(task_id: str) -> None:
             if task.id == task_id:
                 task.status = Status.IN_PROGRESS
                 task.last_updated_at = datetime.now()
-                break
+                write_tasks_file(tasks)
+                return
 
-        write_tasks_file(tasks)
+        print(f"No task with ID: {task_id} exists.")
 
     except FileNotFoundError as e:
         raise FileNotFoundError("Task file not found.") from e
@@ -160,9 +161,10 @@ def mark_task_done(task_id: str):
             if task.id == task_id:
                 task.status = Status.DONE
                 task.last_updated_at = datetime.now()
-                break
+                write_tasks_file(tasks)
+                return
 
-        write_tasks_file(tasks)
+        print(f"No task with ID: {task_id} exists.")
 
     except FileNotFoundError as e:
         raise FileNotFoundError("Task file not found.") from e
@@ -176,8 +178,10 @@ def mark_task_not_started(task_id: str):
             if task.id == task_id:
                 task.status = Status.NOT_STARTED
                 task.last_updated_at = datetime.now()
+                write_tasks_file(tasks)
+                return
 
-        write_tasks_file(tasks)
+        print(f"No task with ID: {task_id} exists.")
 
     except FileNotFoundError as e:
         raise FileNotFoundError("Task file not found.") from e
