@@ -78,24 +78,23 @@ def write_tasks_file(tasks: list[Task]) -> None:
         raise FileNotFoundError("Tasks file not found") from e
 
 
-def add_task(task_description: str) -> None:
-    task: Task = Task(
-        id=task_id_generator(),
-        description=task_description,
-        status=Status.NOT_STARTED,
-        created_at=datetime.now(),
-        last_updated_at=datetime.now(),
-    )
-
+def add_task(*task_descriptions: str) -> None:
     if not tasks_file_exists():
         create_tasks_file()
 
-    try:
-        tasks: list[Task] = read_tasks_file()
+    tasks = read_tasks_file()
+
+    for task_description in task_descriptions:
+        task: Task = Task(
+            id=task_id_generator(),
+            description=task_description,
+            status=Status.NOT_STARTED,
+            created_at=datetime.now(),
+            last_updated_at=datetime.now(),
+        )
         tasks.append(task)
+
         write_tasks_file(tasks)
-    except FileNotFoundError as e:
-        raise e
 
 
 def delete_task(task_id: int) -> None:
@@ -201,7 +200,8 @@ def help():
     
     These are examples of the supported commands:
     
-    Add new task ........................................ python tasker.py add 'read a book'
+    Add single task ........................................ python tasker.py add 'read a book'
+    Add multiple tasks ..................................... python tasker.py add 'do this' 'do that'
     
     Delete task (e.g. ID: 5) ............................ python tasker.py del 5
     
