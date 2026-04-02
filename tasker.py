@@ -225,12 +225,18 @@ command_map: dict[str, Callable] = {
 }
 
 if __name__ == "__main__":
-    cli_args = sys.argv[1:]
-    command_name = cli_args[0]
-    command_args = cli_args[1:]
 
-    if command_name in command_map:
-        command = command_map[command_name]
-        command(*command_args)
+    cli_args = sys.argv[1:]
+
+    if not cli_args:
+        help()
+        sys.exit()
     else:
-        print(f"Command '{command_name}' doesn't exist.")
+        command_name = cli_args[0]
+        command_args = cli_args[1:]
+
+        if command_name in command_map:
+            command = command_map[command_name]
+            command(*command_args)
+        else:
+            print(f"Command '{command_name}' doesn't exist.")
