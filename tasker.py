@@ -237,6 +237,12 @@ if __name__ == "__main__":
 
         if command_name in command_map:
             command = command_map[command_name]
-            command(*command_args)
+
+            try:
+                command(*command_args)
+            except TypeError:
+                print("Error: invalid or missing arguments.\n")
+                help()
+
         else:
             print(f"Command '{command_name}' doesn't exist.")
