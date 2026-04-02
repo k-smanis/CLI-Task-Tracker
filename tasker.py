@@ -191,7 +191,31 @@ def list_tasks() -> None:
         raise FileNotFoundError("Task file not found.") from e
 
 
+def help():
+    help_message = """
+    usage: python tasker.py [ -h | --help] <command> [<args>]
+    
+    These are examples of the supported commands:
+    
+    Add new task ........................................ python tasker.py add 'read a book'
+    
+    Delete task (e.g. ID: 5) ............................ python tasker.py del 5
+    
+    List all tasks ...................................... python tasker.py ls
+    
+    Mark task as 'IN PROGRESS' (e.g. ID: 3) ............. python tasker.py mark-in-progress 3
+    
+    Mark task as 'DONE' (e.g. ID: 2) .................... python tasker.py mark-done 2
+    
+    Mark task as 'NOT STARTED' (e.g. ID: 1) ............. python tasker.py mark-not-started 1
+    
+    """
+    print(help_message)
+
+
 command_map: dict[str, Callable] = {
+    "-h": help,
+    "--help": help,
     "add": add_task,
     "del": delete_task,
     "ls": list_tasks,
