@@ -78,7 +78,7 @@ def write_tasks_file(tasks: list[Task]) -> None:
         raise FileNotFoundError("Tasks file not found") from e
 
 
-def add_task(*task_descriptions: str) -> None:
+def add_tasks(*task_descriptions: str) -> None:
     if not tasks_file_exists():
         create_tasks_file()
 
@@ -97,10 +97,13 @@ def add_task(*task_descriptions: str) -> None:
         write_tasks_file(tasks)
 
 
-def delete_task(task_id: int) -> None:
+def delete_tasks(*task_ids: int) -> None:
     try:
         tasks: list[Task] = read_tasks_file()
-        tasks = [task for task in tasks if task.id != task_id]
+
+        for task_id in task_ids:
+            tasks = [task for task in tasks if task.id != task_id]
+
         write_tasks_file(tasks)
     except FileNotFoundError as e:
         raise FileNotFoundError("Task file not found.") from e
@@ -220,8 +223,8 @@ def help():
 command_map: dict[str, Callable] = {
     "-h": help,
     "--help": help,
-    "add": add_task,
-    "del": delete_task,
+    "add": add_tasks,
+    "del": delete_tasks,
     "ls": list_tasks,
     "mark-not-started": mark_task_not_started,
     "mark-in-progress": mark_task_in_progress,
