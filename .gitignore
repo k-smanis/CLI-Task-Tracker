@@ -1,2 +1,8 @@
-.venv
-*.json
+.venv/
+.vscode/
+__pycache__/
+*.pyc
+tasks.json
+dist/
+build/
+*.egg-info/
