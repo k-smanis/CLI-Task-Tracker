@@ -7,7 +7,6 @@ from datetime import datetime
 import os
 import json
 
-# TASKS_FILE_PATH = os.path.join(os.curdir, "tasks.json")
 TASKS_FILE_PATH = os.path.expanduser("~/.tasker/tasks.json")
 
 
@@ -194,6 +193,9 @@ def mark_task_not_started(task_id: str):
 
 def list_tasks(specified_status: str = Status.UNSPECIFIED.value) -> None:
     try:
+        if not tasks_file_exists():
+            create_tasks_file()
+
         all_tasks: list[Task] = read_tasks_file()
         specified_status_normalized = specified_status.upper()
 
