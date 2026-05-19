@@ -7,7 +7,8 @@ from datetime import datetime
 import os
 import json
 
-TASKS_FILE_PATH = os.path.join(os.curdir, "tasks.json")
+# TASKS_FILE_PATH = os.path.join(os.curdir, "tasks.json")
+TASKS_FILE_PATH = os.path.expanduser("~/.tasker/tasks.json")
 
 
 def task_id_generator() -> str:
@@ -54,6 +55,8 @@ def tasks_file_exists() -> bool:
 
 
 def create_tasks_file() -> None:
+    os.makedirs(os.path.dirname(TASKS_FILE_PATH), exist_ok=True)
+
     with open(TASKS_FILE_PATH, "w") as f:
         f.write("[]")
 
@@ -97,7 +100,7 @@ def add_tasks(*task_descriptions: str) -> None:
         write_tasks_file(tasks)
 
 
-def delete_tasks(*task_ids: int) -> None:
+def delete_tasks(*task_ids: str) -> None:
     try:
         tasks: list[Task] = read_tasks_file()
 
@@ -248,8 +251,8 @@ command_map: dict[str, Callable] = {
     "mark-done": mark_task_done,
 }
 
-if __name__ == "__main__":
 
+def main() -> None:
     cli_args = sys.argv[1:]
 
     if not cli_args:
@@ -270,3 +273,7 @@ if __name__ == "__main__":
 
         else:
             print(f"Command '{command_name}' doesn't exist.")
+
+
+if __name__ == "__main__":
+    main()
