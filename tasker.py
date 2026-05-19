@@ -7,7 +7,6 @@ from datetime import datetime
 import os
 import json
 
-
 TASKS_FILE_PATH = os.path.join(os.curdir, "tasks.json")
 
 
@@ -33,6 +32,7 @@ def task_id_generator() -> str:
 
 
 class Status(Enum):
+    UNSPECIFIED = "UNSPECIFIED"
     NOT_STARTED = "NOT_STARTED"
     IN_PROGRESS = "IN_PROGRESS"
     DONE = "DONE"
@@ -189,10 +189,22 @@ def mark_task_not_started(task_id: str):
         raise FileNotFoundError("Task file not found.") from e
 
 
-def list_tasks() -> None:
+def list_tasks(specified_status: str = Status.UNSPECIFIED.value) -> None:
     try:
-        tasks: list[Task] = read_tasks_file()
-        console_print_tasks(tasks)
+        all_tasks: list[Task] = read_tasks_file()
+        specified_status_normalized = specified_status.upper()
+
+        if specified_status_normalized == Status.UNSPECIFIED.value:
+            specified_tasks = all_tasks
+        else:
+            specified_tasks = [
+                task
+                for task in all_tasks
+                if task.status.value == specified_status_normalized
+            ]
+
+        console_print_tasks(specified_tasks)
+
     except FileNotFoundError as e:
         raise FileNotFoundError("Task file not found.") from e
 
@@ -204,11 +216,16 @@ def help():
     These are examples of the supported commands:
     
     Add single task ........................................ python tasker.py add 'read a book'
+    
     Add multiple tasks ..................................... python tasker.py add 'do this' 'do that'
     
     Delete task (e.g. ID: 5) ............................ python tasker.py del 5
     
     List all tasks ...................................... python tasker.py ls
+    
+    List tasks by status ................................ python tasker.py ls done
+                         ................................ python tasker.py ls in_progress
+                         ................................ python tasker.py ls not_started
     
     Mark task as 'IN PROGRESS' (e.g. ID: 3) ............. python tasker.py mark-in-progress 3
     
